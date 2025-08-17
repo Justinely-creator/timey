@@ -627,7 +627,7 @@ function App() {
                 // For regular study plan generation, preserve manual reschedules by default
                 // Use the refresh function for options to reset reschedules
                     // Generate plan but preserve manual reschedules
-                    const result = generateNewStudyPlanWithPreservation(tasks, settings, fixedCommitments, studyPlans);
+                    const result = generateNewStudyPlanWithPreservation(tasks, settings, getAllCommitmentsForScheduling(), studyPlans);
                     const newPlans = result.plans;
                     
                     // Enhanced preservation logic
@@ -679,7 +679,7 @@ function App() {
             }
 
             // Generate new study plan, preserving manual schedules
-            const result = generateNewStudyPlanWithPreservation(tasks, settings, fixedCommitments, studyPlans);
+            const result = generateNewStudyPlanWithPreservation(tasks, settings, getAllCommitmentsForScheduling(), studyPlans);
             const newPlans = result.plans;
             
             // Preserve session status from previous plan
@@ -726,8 +726,8 @@ function App() {
             try {
                 // Generate new study plan
                 const result = preserveManualReschedules
-                    ? generateNewStudyPlanWithPreservation(tasks, settings, fixedCommitments, studyPlans)
-                    : generateNewStudyPlan(tasks, settings, fixedCommitments, studyPlans);
+                    ? generateNewStudyPlanWithPreservation(tasks, settings, getAllCommitmentsForScheduling(), studyPlans)
+                    : generateNewStudyPlan(tasks, settings, getAllCommitmentsForScheduling(), studyPlans);
                 const newPlans = result.plans;
 
                 if (preserveManualReschedules) {
