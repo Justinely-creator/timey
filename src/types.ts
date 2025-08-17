@@ -234,10 +234,12 @@ export interface CalendarEvent {
   start: Date;
   end: Date;
   resource: {
-    type: 'study' | 'commitment';
-    data: StudySession | FixedCommitment;
+    type: 'study' | 'commitment' | 'smart-commitment';
+    data: StudySession | FixedCommitment | SmartCommitment;
     taskId?: string;
     planDate?: string; // For study sessions, which plan date they belong to
+    commitmentType?: 'fixed' | 'smart'; // Additional field to distinguish commitment types
+    isPattern?: boolean; // For smart commitments, indicates this is part of a recurring pattern
   };
 }
 
