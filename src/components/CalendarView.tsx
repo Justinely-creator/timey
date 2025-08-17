@@ -34,10 +34,12 @@ interface CalendarEvent {
   end: Date;
   allDay?: boolean;
   resource: {
-    type: 'study' | 'commitment';
-    data: StudySession | FixedCommitment;
+    type: 'study' | 'commitment' | 'smart-commitment';
+    data: StudySession | FixedCommitment | SmartCommitment;
     taskId?: string;
     planDate?: string; // For study sessions, which plan date they belong to
+    commitmentType?: 'fixed' | 'smart';
+    isPattern?: boolean; // For smart commitments, indicates this is part of a recurring pattern
   };
 }
 
