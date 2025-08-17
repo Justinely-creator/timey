@@ -447,6 +447,9 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
               <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-200">
                 Preferred Days
               </label>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                📍 Select which days of the week you prefer to study this subject
+              </p>
               <div className="flex flex-wrap gap-2">
                 {daysOfWeekOptions.map((day) => (
                   <button
