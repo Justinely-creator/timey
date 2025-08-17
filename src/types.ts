@@ -169,7 +169,7 @@ export interface SmartCommitment {
 
   // Flexibility settings
   allowTimeShifting: boolean; // Allow system to shift times when conflicts arise
-  priorityLevel: 'high' | 'medium' | 'low'; // Priority for conflict resolution
+  priorityLevel: 'important' | 'standard'; // Priority for conflict resolution
 
   // Generated schedule
   suggestedSessions: GeneratedSession[];
