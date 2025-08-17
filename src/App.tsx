@@ -2519,7 +2519,7 @@ function App() {
                                 });
                                 setActiveTab('timer');
                             }}
-                            onDeleteFixedCommitment={handleDeleteFixedCommitment}
+                            onDeleteFixedCommitment={handleDeleteCommitment}
                             onUpdateStudyPlans={setStudyPlans}
                         />
                     )}
