@@ -2543,9 +2543,12 @@ function App() {
 
                     {activeTab === 'commitments' && (
                         <div className="space-y-4 sm:space-y-6">
-                            <FixedCommitmentInput 
-                                onAddCommitment={handleAddFixedCommitment} 
-                                existingCommitments={fixedCommitments}
+                            <FixedCommitmentInput
+                                onAddCommitment={handleAddFixedCommitment}
+                                onAddSmartCommitment={handleAddSmartCommitment}
+                                existingCommitments={[...fixedCommitments, ...smartCommitments]}
+                                settings={settings}
+                                existingPlans={studyPlans}
                             />
                             {editingCommitment ? (
                                 <FixedCommitmentEdit
