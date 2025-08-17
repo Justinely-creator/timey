@@ -411,8 +411,11 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">
-                  Hours per Week
+                  Total Hours per Week
                 </label>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                  📅 How many hours total you want to spend on this activity each week
+                </p>
                 <input
                   type="number"
                   min="0.5"
