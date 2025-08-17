@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Filter, Edit, Trash2, X } from 'lucide-react';
-import { FixedCommitment } from '../types';
+import { Search, Filter, Edit, Trash2, X, Brain, Settings } from 'lucide-react';
+import { FixedCommitment, SmartCommitment, Commitment } from '../types';
 
 interface CommitmentsListProps {
-  commitments: FixedCommitment[];
+  commitments: (FixedCommitment | SmartCommitment)[];
   onEditCommitment: (commitment: FixedCommitment) => void;
   onDeleteCommitment: (commitmentId: string) => void;
 }
