@@ -730,7 +730,7 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
               </p>
             </div>
           </div>
-        ) : (
+        ) : commitmentType !== 'smart' && !formData.recurring ? (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-200">
               Specific Dates
@@ -745,7 +745,7 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
                   Choose each date when this commitment occurs.
                 </p>
               </div>
-              
+
               <div className="flex items-center space-x-2">
                 <div className="relative flex-1">
                   <Calendar className="absolute left-3 top-2.5 text-gray-400" size={20} />
@@ -768,7 +768,7 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
                 </div>
                 <span className="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">Click to add</span>
               </div>
-              
+
               {formData.specificDates.length > 0 && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
@@ -808,7 +808,7 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
               )}
             </div>
           </div>
-        )}
+        ) : null}
 
           <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">
