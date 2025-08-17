@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Calendar, CheckSquare, Clock, Settings as SettingsIcon, BarChart3, CalendarDays, Lightbulb, Edit, Trash2, Menu, X, HelpCircle, Trophy, User } from 'lucide-react';
-import { Task, StudyPlan, UserSettings, FixedCommitment, StudySession, TimerState } from './types';
+import { Task, StudyPlan, UserSettings, FixedCommitment, SmartCommitment, Commitment, StudySession, TimerState } from './types';
 import { GamificationData, Achievement, DailyChallenge, MotivationalMessage } from './types-gamification';
 import { getUnscheduledMinutesForTasks, getLocalDateString, checkCommitmentConflicts, generateNewStudyPlan, generateNewStudyPlanWithPreservation, reshuffleStudyPlan, markPastSessionsAsSkipped } from './utils/scheduling';
 import { getAccurateUnscheduledTasks, shouldShowNotifications, getNotificationPriority } from './utils/enhanced-notifications';
@@ -46,6 +46,7 @@ function App() {
     const [currentTask, setCurrentTask] = useState<Task | null>(null);
     const [currentSession, setCurrentSession] = useState<{ allocatedHours: number; planDate?: string; sessionNumber?: number } | null>(null);
     const [fixedCommitments, setFixedCommitments] = useState<FixedCommitment[]>([]);
+    const [smartCommitments, setSmartCommitments] = useState<SmartCommitment[]>([]);
     const [settings, setSettings] = useState<UserSettings>({
         dailyAvailableHours: 6,
         workDays: [0, 1, 2, 3, 4, 5, 6],
@@ -513,6 +514,8 @@ function App() {
             setTasks(initialTasks);
             setSettings(initialSettings);
             setFixedCommitments(initialCommitments);
+            const initialSmartCommitments = JSON.parse(localStorage.getItem('timepilot-smart-commitments') || '[]');
+            setSmartCommitments(initialSmartCommitments);
             setStudyPlans(initialStudyPlans);
             setIsPlanStale(false); // Mark plan as not stale on initial load
             setHasLoadedFromStorage(true); // Mark that initial load is complete
@@ -538,6 +541,7 @@ function App() {
                 studyPlanMode: 'even', // Set default to 'even'
             });
             setFixedCommitments([]);
+            setSmartCommitments([]);
             setStudyPlans([]);
             setIsPlanStale(false); // Mark plan as not stale on initial load (even on error)
             setHasLoadedFromStorage(true); // Mark that initial load is complete
@@ -557,6 +561,10 @@ function App() {
     useEffect(() => {
         localStorage.setItem('timepilot-commitments', JSON.stringify(fixedCommitments));
     }, [fixedCommitments]);
+
+    useEffect(() => {
+        localStorage.setItem('timepilot-smart-commitments', JSON.stringify(smartCommitments));
+    }, [smartCommitments]);
 
     useEffect(() => {
         localStorage.setItem('timepilot-studyPlans', JSON.stringify(studyPlans));
