@@ -2572,7 +2572,7 @@ function App() {
                                 <CommitmentsList
                                     commitments={[...fixedCommitments, ...smartCommitments]}
                                     onEditCommitment={setEditingCommitment}
-                                    onDeleteCommitment={handleDeleteFixedCommitment}
+                                    onDeleteCommitment={handleDeleteCommitment}
                                 />
                             )}
                         </div>
