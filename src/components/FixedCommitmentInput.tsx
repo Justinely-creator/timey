@@ -605,19 +605,21 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
           </div>
         )}
 
-        <div className="mb-4">
-          <label className="flex items-center space-x-2 text-sm font-medium text-gray-700 dark:text-gray-200">
-            <input
-              type="checkbox"
-              checked={formData.isAllDay}
-              onChange={(e) => setFormData({ ...formData, isAllDay: e.target.checked })}
-              className="text-blue-600 focus:ring-blue-500"
-            />
-            <span>All-day event (no specific time)</span>
-          </label>
-        </div>
+        {commitmentType !== 'smart' && (
+          <div className="mb-4">
+            <label className="flex items-center space-x-2 text-sm font-medium text-gray-700 dark:text-gray-200">
+              <input
+                type="checkbox"
+                checked={formData.isAllDay}
+                onChange={(e) => setFormData({ ...formData, isAllDay: e.target.checked })}
+                className="text-blue-600 focus:ring-blue-500"
+              />
+              <span>All-day event (no specific time)</span>
+            </label>
+          </div>
+        )}
 
-        {!formData.isAllDay && (
+        {commitmentType !== 'smart' && !formData.isAllDay && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">
