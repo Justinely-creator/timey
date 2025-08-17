@@ -466,6 +466,9 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
               <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-200">
                 Preferred Time Ranges
               </label>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                🎯 Specify when you prefer to study (e.g., \"2pm-6pm\" means the AI will try to schedule sessions within these hours)
+              </p>
               <div className="space-y-2">
                 {smartFormData.preferredTimeRanges.map((range, index) => (
                   <div key={index} className="flex items-center space-x-2">
