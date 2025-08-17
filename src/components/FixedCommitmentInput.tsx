@@ -573,35 +573,37 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">
-              Recurrence Pattern
-            </label>
-            <div className="flex space-x-4">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  name="recurring"
-                  checked={formData.recurring}
-                  onChange={() => setFormData({ ...formData, recurring: true, specificDates: [] })}
-                  className="text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm text-gray-700 dark:text-gray-200">Recurring</span>
+        {commitmentType !== 'smart' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">
+                Recurrence Pattern
               </label>
-              <label className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  name="recurring"
-                  checked={!formData.recurring}
-                  onChange={() => setFormData({ ...formData, recurring: false, daysOfWeek: [] })}
-                  className="text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm text-gray-700 dark:text-gray-200">One-time</span>
-              </label>
+              <div className="flex space-x-4">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    name="recurring"
+                    checked={formData.recurring}
+                    onChange={() => setFormData({ ...formData, recurring: true, specificDates: [] })}
+                    className="text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-700 dark:text-gray-200">Recurring</span>
+                </label>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    name="recurring"
+                    checked={!formData.recurring}
+                    onChange={() => setFormData({ ...formData, recurring: false, daysOfWeek: [] })}
+                    className="text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-700 dark:text-gray-200">One-time</span>
+                </label>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         <div className="mb-4">
           <label className="flex items-center space-x-2 text-sm font-medium text-gray-700 dark:text-gray-200">
