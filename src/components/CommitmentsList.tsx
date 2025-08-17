@@ -331,20 +331,29 @@ const CommitmentsList: React.FC<CommitmentsListProps> = ({
                   </div>
                 </div>
                 <div className="flex items-center space-x-2 ml-4 flex-shrink-0">
-                  <button
-                    onClick={() => onEditCommitment(commitment)}
-                    className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700"
-                    title="Edit commitment"
-                  >
-                    <Edit size={20} />
-                  </button>
-                  <button
-                    onClick={() => onDeleteCommitment(commitment.id)}
-                    className="p-2 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-lg transition-colors dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900"
-                    title="Delete commitment"
-                  >
-                    <Trash2 size={20} />
-                  </button>
+                  {commitment.type !== 'smart' && (
+                    <>
+                      <button
+                        onClick={() => onEditCommitment(commitment as FixedCommitment)}
+                        className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700"
+                        title="Edit commitment"
+                      >
+                        <Edit size={20} />
+                      </button>
+                      <button
+                        onClick={() => onDeleteCommitment(commitment.id)}
+                        className="p-2 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-lg transition-colors dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900"
+                        title="Delete commitment"
+                      >
+                        <Trash2 size={20} />
+                      </button>
+                    </>
+                  )}
+                  {commitment.type === 'smart' && (
+                    <div className="text-xs text-gray-500 dark:text-gray-400 italic">
+                      Smart commitments auto-optimize
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
