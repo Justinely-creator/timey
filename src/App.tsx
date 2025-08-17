@@ -949,9 +949,19 @@ function App() {
         }
     };
 
-    const handleDeleteFixedCommitment = async (commitmentId: string) => {
-        // Find the commitment being deleted
+    const handleDeleteCommitment = async (commitmentId: string) => {
+        // Check if it's a smart commitment first
+        const smartCommitment = smartCommitments.find(c => c.id === commitmentId);
+        if (smartCommitment) {
+            setSmartCommitments(prev => prev.filter(c => c.id !== commitmentId));
+            setLastPlanStaleReason("commitment");
+            setIsPlanStale(true);
+            return;
+        }
+
+        // Handle fixed commitment deletion (existing logic)
         const commitmentToDelete = fixedCommitments.find(c => c.id === commitmentId);
+        if (!commitmentToDelete) return;
 
         // Remove the commitment from the array
         let updatedCommitments = fixedCommitments.filter(commitment => commitment.id !== commitmentId);
@@ -2965,7 +2975,7 @@ function App() {
                                         <div className="grid grid-cols-3 gap-2">
                                             {[
                                                 { amount: '50', emoji: '☕', desc: 'Coffee' },
-                                                { amount: '100', emoji: '���', desc: 'Pizza' },
+                                                { amount: '100', emoji: '🍕', desc: 'Pizza' },
                                                 { amount: '200', emoji: '🎉', desc: 'Party' }
                                             ].map((item, index) => (
                                                 <div
