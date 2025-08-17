@@ -53,22 +53,36 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
   const [showPreview, setShowPreview] = useState(false);
   const [conflictError, setConflictError] = useState<string | null>(null);
 
-  // Enhanced validation
+  // Enhanced validation for fixed commitments
   const isTitleValid = formData.title.trim().length > 0;
   const isTitleLengthValid = formData.title.trim().length <= 100;
   const isStartTimeValid = formData.isAllDay || formData.startTime.trim().length > 0;
   const isEndTimeValid = formData.isAllDay || formData.endTime.trim().length > 0;
   const isDaysValid = formData.recurring ? formData.daysOfWeek.length > 0 : true;
   const isDatesValid = !formData.recurring ? formData.specificDates.length > 0 : true;
-  const isTimeRangeValid = formData.isAllDay || !formData.startTime || !formData.endTime || 
+  const isTimeRangeValid = formData.isAllDay || !formData.startTime || !formData.endTime ||
     formData.startTime < formData.endTime;
   const isLocationValid = !formData.location || formData.location.trim().length <= 200;
-  const isDateRangeValid = !formData.recurring || !formData.dateRange.startDate || !formData.dateRange.endDate || 
+  const isDateRangeValid = !formData.recurring || !formData.dateRange.startDate || !formData.dateRange.endDate ||
     formData.dateRange.startDate <= formData.dateRange.endDate;
 
-  const isFormValid = isTitleValid && isTitleLengthValid && isDaysValid && 
-                     isDatesValid && isTimeRangeValid && isLocationValid && isDateRangeValid &&
-                     (formData.isAllDay || (isStartTimeValid && isEndTimeValid));
+  // Smart commitment validation
+  const isSmartTitleValid = formData.title.trim().length > 0;
+  const isSmartHoursValid = smartFormData.totalHoursPerWeek > 0 && smartFormData.totalHoursPerWeek <= 40;
+  const isSmartDaysValid = smartFormData.preferredDays.length > 0;
+  const isSmartTimeRangesValid = smartFormData.preferredTimeRanges.length > 0 &&
+    smartFormData.preferredTimeRanges.every(range => range.start < range.end);
+  const isSmartDurationValid = smartFormData.sessionDurationRange.min > 0 &&
+    smartFormData.sessionDurationRange.min <= smartFormData.sessionDurationRange.max;
+
+  const isFixedFormValid = isTitleValid && isTitleLengthValid && isDaysValid &&
+                          isDatesValid && isTimeRangeValid && isLocationValid && isDateRangeValid &&
+                          (formData.isAllDay || (isStartTimeValid && isEndTimeValid));
+
+  const isSmartFormValid = isSmartTitleValid && isSmartHoursValid && isSmartDaysValid &&
+                          isSmartTimeRangesValid && isSmartDurationValid;
+
+  const isFormValid = commitmentType === 'smart' ? isSmartFormValid : isFixedFormValid;
 
 
 
