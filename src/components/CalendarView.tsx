@@ -99,6 +99,7 @@ function splitEventIfCrossesMidnight(start: Date, end: Date) {
 const CalendarView: React.FC<CalendarViewProps> = ({
   studyPlans,
   fixedCommitments,
+  smartCommitments = [],
   tasks,
   settings,
   onSelectTask,
