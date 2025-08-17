@@ -375,6 +375,204 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
                       </div>
         </div>
 
+        {/* Smart Commitment Fields */}
+        {commitmentType === 'smart' && (
+          <div className="space-y-4 border border-purple-200 dark:border-purple-700 rounded-lg p-4 bg-purple-50 dark:bg-purple-900/20">
+            <div className="flex items-center space-x-2 mb-2">
+              <Brain className="text-purple-500" size={20} />
+              <h3 className="text-md font-medium text-gray-800 dark:text-white">Smart Scheduling Preferences</h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">
+                  Hours per Week
+                </label>
+                <input
+                  type="number"
+                  min="0.5"
+                  max="40"
+                  step="0.5"
+                  value={smartFormData.totalHoursPerWeek}
+                  onChange={(e) => setSmartFormData({ ...smartFormData, totalHoursPerWeek: parseFloat(e.target.value) || 0 })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                  placeholder="3"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">
+                  Priority Level
+                </label>
+                <select
+                  value={smartFormData.priorityLevel}
+                  onChange={(e) => setSmartFormData({ ...smartFormData, priorityLevel: e.target.value as 'high' | 'medium' | 'low' })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                >
+                  <option value="low">Low Priority</option>
+                  <option value="medium">Medium Priority</option>
+                  <option value="high">High Priority</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-200">
+                Preferred Days
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {daysOfWeekOptions.map((day) => (
+                  <button
+                    key={day.value}
+                    type="button"
+                    onClick={() => handleSmartDayToggle(day.value)}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                      smartFormData.preferredDays.includes(day.value)
+                        ? 'bg-purple-500 text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    {day.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-200">
+                Preferred Time Ranges
+              </label>
+              <div className="space-y-2">
+                {smartFormData.preferredTimeRanges.map((range, index) => (
+                  <div key={index} className="flex items-center space-x-2">
+                    <input
+                      type="time"
+                      value={range.start}
+                      onChange={(e) => handleTimeRangeChange(index, 'start', e.target.value)}
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                    />
+                    <span className="text-gray-500">to</span>
+                    <input
+                      type="time"
+                      value={range.end}
+                      onChange={(e) => handleTimeRangeChange(index, 'end', e.target.value)}
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                    />
+                    {smartFormData.preferredTimeRanges.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeTimeRange(index)}
+                        className="text-red-500 hover:text-red-700 font-bold text-lg leading-none"
+                        title="Remove time range"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={addTimeRange}
+                  className="text-purple-600 hover:text-purple-800 text-sm font-medium dark:text-purple-400 dark:hover:text-purple-200"
+                >
+                  + Add time range
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">
+                  Min Session Duration (minutes)
+                </label>
+                <input
+                  type="number"
+                  min="15"
+                  max="480"
+                  step="15"
+                  value={smartFormData.sessionDurationRange.min}
+                  onChange={(e) => setSmartFormData({
+                    ...smartFormData,
+                    sessionDurationRange: {
+                      ...smartFormData.sessionDurationRange,
+                      min: parseInt(e.target.value) || 15
+                    }
+                  })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">
+                  Max Session Duration (minutes)
+                </label>
+                <input
+                  type="number"
+                  min="15"
+                  max="480"
+                  step="15"
+                  value={smartFormData.sessionDurationRange.max}
+                  onChange={(e) => setSmartFormData({
+                    ...smartFormData,
+                    sessionDurationRange: {
+                      ...smartFormData.sessionDurationRange,
+                      max: parseInt(e.target.value) || 120
+                    }
+                  })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="flex items-center space-x-2 text-sm font-medium text-gray-700 dark:text-gray-200">
+                <input
+                  type="checkbox"
+                  checked={smartFormData.allowTimeShifting}
+                  onChange={(e) => setSmartFormData({ ...smartFormData, allowTimeShifting: e.target.checked })}
+                  className="text-purple-600 focus:ring-purple-500"
+                />
+                <span>Allow automatic time shifting when conflicts arise</span>
+              </label>
+            </div>
+
+            {/* Generate Preview Button */}
+            <div className="border-t border-purple-200 dark:border-purple-700 pt-4">
+              <button
+                type="button"
+                onClick={handleGeneratePreview}
+                disabled={!isSmartFormValid}
+                className="w-full bg-gradient-to-r from-purple-500 to-pink-600 text-white px-4 py-2 rounded-lg hover:from-purple-600 hover:to-pink-700 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Zap size={20} />
+                <span>Generate Schedule Preview</span>
+              </button>
+            </div>
+
+            {/* Schedule Preview */}
+            {showPreview && suggestedSessions.length > 0 && (
+              <div className="border border-green-200 dark:border-green-700 rounded-lg p-4 bg-green-50 dark:bg-green-900/20">
+                <h4 className="text-md font-medium text-gray-800 dark:text-white mb-3">Suggested Weekly Schedule</h4>
+                <div className="space-y-2 max-h-32 overflow-y-auto">
+                  {suggestedSessions.slice(0, 7).map((session, index) => (
+                    <div key={index} className="flex items-center justify-between text-sm">
+                      <span className="font-medium">
+                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][session.dayOfWeek]}
+                      </span>
+                      <span className="text-gray-600 dark:text-gray-400">
+                        {session.startTime} - {session.endTime} ({session.duration}h)
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                  Total: {suggestedSessions.reduce((sum, s) => sum + s.duration, 0).toFixed(1)} hours per week
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">
