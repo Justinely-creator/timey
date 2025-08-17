@@ -881,6 +881,12 @@ function App() {
         setLastPlanStaleReason("task");
     };
 
+    // Helper function to get all commitments in format expected by scheduling functions
+    const getAllCommitmentsForScheduling = (): FixedCommitment[] => {
+        const convertedSmartCommitments = convertSmartCommitmentsToFixedFormat(smartCommitments);
+        return [...fixedCommitments, ...convertedSmartCommitments];
+    };
+
     const handleAddSmartCommitment = async (commitmentData: Omit<SmartCommitment, 'id' | 'createdAt'>) => {
         const newCommitment: SmartCommitment = {
             ...commitmentData,
