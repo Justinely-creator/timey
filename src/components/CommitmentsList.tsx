@@ -247,31 +247,66 @@ const CommitmentsList: React.FC<CommitmentsListProps> = ({
                     </div>
                   </div>
                   <div className="space-y-2">
-                    {commitment.isAllDay ? (
-                      <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
-                        <span className="font-medium">⏰</span>
-                        <span>All Day</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
-                        <span className="font-medium">⏰</span>
-                        <span>
-                          {commitment.startTime} - {commitment.endTime}
-                        </span>
-                      </div>
-                    )}
-                    <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
-                      <span className="font-medium">📅</span>
-                      <span className="truncate">
-                        {commitment.recurring
-                          ? commitment.daysOfWeek
+                    {commitment.type === 'smart' ? (
+                      // Smart commitment display
+                      <>
+                        <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
+                          <span className="font-medium">⏰</span>
+                          <span>{(commitment as SmartCommitment).totalHoursPerWeek}h per week</span>
+                        </div>
+                        <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
+                          <span className="font-medium">📅</span>
+                          <span className="truncate">
+                            {(commitment as SmartCommitment).preferredDays
                               .map((day) => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][day])
-                              .join(', ')
-                          : commitment.specificDates
-                              ?.map((date) => new Date(date).toLocaleDateString())
                               .join(', ')}
-                      </span>
-                    </div>
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
+                          <span className="font-medium">🎯</span>
+                          <span>
+                            {(commitment as SmartCommitment).preferredTimeRanges
+                              .map(range => `${range.start}-${range.end}`)
+                              .join(', ')}
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
+                          <span className="font-medium">📊</span>
+                          <span>
+                            {(commitment as SmartCommitment).sessionDurationRange.min}min - {(commitment as SmartCommitment).sessionDurationRange.max}min sessions
+                          </span>
+                        </div>
+                      </>
+                    ) : (
+                      // Fixed commitment display (existing logic)
+                      <>
+                        {(commitment as FixedCommitment).isAllDay ? (
+                          <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
+                            <span className="font-medium">⏰</span>
+                            <span>All Day</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
+                            <span className="font-medium">⏰</span>
+                            <span>
+                              {(commitment as FixedCommitment).startTime} - {(commitment as FixedCommitment).endTime}
+                            </span>
+                          </div>
+                        )}
+                        <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
+                          <span className="font-medium">📅</span>
+                          <span className="truncate">
+                            {(commitment as FixedCommitment).recurring
+                              ? (commitment as FixedCommitment).daysOfWeek
+                                  .map((day) => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][day])
+                                  .join(', ')
+                              : (commitment as FixedCommitment).specificDates
+                                  ?.map((date) => new Date(date).toLocaleDateString())
+                                  .join(', ')}
+                          </span>
+                        </div>
+                      </>
+                    )}
                     {commitment.location && (
                       <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
                         <span className="font-medium">📍</span>
