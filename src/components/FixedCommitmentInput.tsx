@@ -46,7 +46,7 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
     preferredTimeRanges: [{ start: '14:00', end: '18:00' }] as TimeRange[],
     sessionDurationRange: { min: 60, max: 120 }, // in minutes
     allowTimeShifting: true,
-    priorityLevel: 'medium' as 'high' | 'medium' | 'low'
+    priorityLevel: 'standard' as 'important' | 'standard'
   });
 
   const [suggestedSessions, setSuggestedSessions] = useState<any[]>([]);
@@ -222,7 +222,7 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
       preferredTimeRanges: [{ start: '14:00', end: '18:00' }],
       sessionDurationRange: { min: 60, max: 120 },
       allowTimeShifting: true,
-      priorityLevel: 'medium'
+      priorityLevel: 'standard'
     });
     setSuggestedSessions([]);
     setShowPreview(false);
@@ -406,12 +406,11 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
                 </label>
                 <select
                   value={smartFormData.priorityLevel}
-                  onChange={(e) => setSmartFormData({ ...smartFormData, priorityLevel: e.target.value as 'high' | 'medium' | 'low' })}
+                  onChange={(e) => setSmartFormData({ ...smartFormData, priorityLevel: e.target.value as 'important' | 'standard' })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                 >
-                  <option value="low">Low Priority</option>
-                  <option value="medium">Medium Priority</option>
-                  <option value="high">High Priority</option>
+                  <option value="standard">Standard Priority</option>
+                  <option value="important">Important (Higher Priority)</option>
                 </select>
               </div>
             </div>
@@ -872,7 +871,7 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
           <div className="flex space-x-3">
             <button
               type="submit"
-              disabled={!isFormValid || (commitmentType === 'smart' && !showPreview)}
+              disabled={!isFormValid}
               className="bg-gradient-to-r from-green-500 to-blue-600 text-white px-6 py-2 rounded-lg hover:from-green-600 hover:to-blue-700 transition-all duration-200 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Plus size={20} />
