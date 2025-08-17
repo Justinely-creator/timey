@@ -1,15 +1,26 @@
 import React, { useState } from 'react';
-import { Plus, Clock, MapPin, User, AlertTriangle, Calendar } from 'lucide-react';
-import { FixedCommitment } from '../types';
+import { Plus, Clock, MapPin, User, AlertTriangle, Calendar, Brain, Settings, Zap } from 'lucide-react';
+import { FixedCommitment, SmartCommitment, TimeRange, UserSettings, StudyPlan } from '../types';
 import { checkCommitmentConflicts } from '../utils/scheduling';
+import { generateSmartCommitmentSchedule } from '../utils/smart-commitment-scheduling';
 
 interface FixedCommitmentInputProps {
   onAddCommitment: (commitment: Omit<FixedCommitment, 'id' | 'createdAt'>) => void;
-  existingCommitments: FixedCommitment[];
+  onAddSmartCommitment: (commitment: Omit<SmartCommitment, 'id' | 'createdAt'>) => void;
+  existingCommitments: (FixedCommitment | SmartCommitment)[];
+  settings: UserSettings;
+  existingPlans: StudyPlan[];
 }
 
-const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({ onAddCommitment, existingCommitments }) => {
+const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
+  onAddCommitment,
+  onAddSmartCommitment,
+  existingCommitments,
+  settings,
+  existingPlans
+}) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [commitmentType, setCommitmentType] = useState<'fixed' | 'smart' | 'one-time'>('fixed');
   const [formData, setFormData] = useState({
     title: '',
     startTime: '',
@@ -27,6 +38,19 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({ onAddCommit
       endDate: ''
     }
   });
+
+  // Smart commitment specific state
+  const [smartFormData, setSmartFormData] = useState({
+    totalHoursPerWeek: 3,
+    preferredDays: [] as number[],
+    preferredTimeRanges: [{ start: '14:00', end: '18:00' }] as TimeRange[],
+    sessionDurationRange: { min: 60, max: 120 }, // in minutes
+    allowTimeShifting: true,
+    priorityLevel: 'medium' as 'high' | 'medium' | 'low'
+  });
+
+  const [suggestedSessions, setSuggestedSessions] = useState<any[]>([]);
+  const [showPreview, setShowPreview] = useState(false);
   const [conflictError, setConflictError] = useState<string | null>(null);
 
   // Enhanced validation
