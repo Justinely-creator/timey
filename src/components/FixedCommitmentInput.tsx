@@ -130,6 +130,31 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
 
     if (commitmentType === 'smart') {
       // Handle smart commitment submission
+      let finalSessions = suggestedSessions;
+
+      // If no preview was generated, generate sessions now
+      if (finalSessions.length === 0) {
+        const smartCommitmentData = {
+          title: formData.title,
+          type: 'smart' as const,
+          category: formData.category,
+          location: formData.location,
+          description: formData.description,
+          totalHoursPerWeek: smartFormData.totalHoursPerWeek,
+          preferredDays: smartFormData.preferredDays,
+          preferredTimeRanges: smartFormData.preferredTimeRanges,
+          sessionDurationRange: smartFormData.sessionDurationRange,
+          allowTimeShifting: smartFormData.allowTimeShifting,
+          priorityLevel: smartFormData.priorityLevel,
+          suggestedSessions: [],
+          isConfirmed: false,
+          dateRange: formData.dateRange.startDate && formData.dateRange.endDate ? formData.dateRange : undefined,
+          countsTowardDailyHours: formData.countsTowardDailyHours
+        };
+
+        finalSessions = generateSmartCommitmentSchedule(smartCommitmentData, settings, existingCommitments, existingPlans);
+      }
+
       const smartCommitmentData = {
         title: formData.title,
         type: 'smart' as const,
@@ -142,7 +167,7 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
         sessionDurationRange: smartFormData.sessionDurationRange,
         allowTimeShifting: smartFormData.allowTimeShifting,
         priorityLevel: smartFormData.priorityLevel,
-        suggestedSessions: suggestedSessions,
+        suggestedSessions: finalSessions,
         isConfirmed: true,
         dateRange: formData.dateRange.startDate && formData.dateRange.endDate ? formData.dateRange : undefined,
         countsTowardDailyHours: formData.countsTowardDailyHours
