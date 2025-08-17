@@ -854,7 +854,7 @@ function App() {
         const updatedTasks = [...tasks, newTask];
 
         // Centralized feasibility assessment
-        const feasibility = assessAddTaskFeasibility(newTask, updatedTasks, settings, fixedCommitments, studyPlans);
+        const feasibility = assessAddTaskFeasibility(newTask, updatedTasks, settings, getAllCommitmentsForScheduling(), studyPlans);
 
         if (feasibility.blocksNewTask) {
             setNotificationMessage(
