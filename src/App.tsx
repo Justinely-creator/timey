@@ -578,12 +578,12 @@ function App() {
             return;
         }
         // Only set isPlanStale if there are tasks and commitments
-        if (tasks.length > 0 && fixedCommitments.length > 0) {
+        if (tasks.length > 0 && (fixedCommitments.length > 0 || smartCommitments.length > 0)) {
             setIsPlanStale(true);
         } else {
             setIsPlanStale(false);
         }
-    }, [tasks, settings, fixedCommitments, hasLoadedFromStorage]);
+    }, [tasks, settings, fixedCommitments, smartCommitments, hasLoadedFromStorage]);
 
     // Manual study plan generation handler
     const handleGenerateStudyPlan = async () => {
