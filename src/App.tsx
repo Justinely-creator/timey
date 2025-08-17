@@ -880,9 +880,22 @@ function App() {
         setLastPlanStaleReason("task");
     };
 
+    const handleAddSmartCommitment = async (commitmentData: Omit<SmartCommitment, 'id' | 'createdAt'>) => {
+        const newCommitment: SmartCommitment = {
+            ...commitmentData,
+            id: Date.now().toString(),
+            createdAt: new Date().toISOString()
+        };
+
+        setSmartCommitments(prev => [...prev, newCommitment]);
+        setLastPlanStaleReason("commitment");
+        setIsPlanStale(true);
+    };
+
     const handleAddFixedCommitment = async (commitmentData: Omit<FixedCommitment, 'id' | 'createdAt'>) => {
         const newCommitment: FixedCommitment = {
             ...commitmentData,
+            type: 'fixed',
             id: Date.now().toString(),
             createdAt: new Date().toISOString()
         };
