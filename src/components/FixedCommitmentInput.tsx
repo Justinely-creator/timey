@@ -96,67 +96,109 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
     { value: 0, label: 'Sun' }
   ];
 
+  const handleGeneratePreview = () => {
+    if (!isSmartFormValid) return;
+
+    const smartCommitmentData = {
+      title: formData.title,
+      type: 'smart' as const,
+      category: formData.category,
+      location: formData.location,
+      description: formData.description,
+      totalHoursPerWeek: smartFormData.totalHoursPerWeek,
+      preferredDays: smartFormData.preferredDays,
+      preferredTimeRanges: smartFormData.preferredTimeRanges,
+      sessionDurationRange: smartFormData.sessionDurationRange,
+      allowTimeShifting: smartFormData.allowTimeShifting,
+      priorityLevel: smartFormData.priorityLevel,
+      suggestedSessions: [],
+      isConfirmed: false,
+      dateRange: formData.dateRange.startDate && formData.dateRange.endDate ? formData.dateRange : undefined,
+      countsTowardDailyHours: formData.countsTowardDailyHours
+    };
+
+    const sessions = generateSmartCommitmentSchedule(smartCommitmentData, settings, existingCommitments, existingPlans);
+    setSuggestedSessions(sessions);
+    setShowPreview(true);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isFormValid) return;
-    
-    // Clear any previous validation errors
+
     setConflictError(null);
-    
-    // Check for conflicts
-    const conflictCheck = checkCommitmentConflicts(formData, existingCommitments);
-    
-    if (conflictCheck.hasConflict) {
-      const conflictingCommitment = conflictCheck.conflictingCommitment!;
-      const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      let conflictDescription = '';
-      
-      if (conflictingCommitment.recurring) {
-        const conflictingDays = conflictingCommitment.daysOfWeek.map(day => dayNames[day]).join(', ');
-        conflictDescription = `(${conflictingDays}, ${conflictingCommitment.startTime}-${conflictingCommitment.endTime})`;
-      } else {
-        const conflictingDates = conflictingCommitment.specificDates?.map(date => new Date(date).toLocaleDateString()).join(', ') || '';
-        conflictDescription = `(${conflictingDates}, ${conflictingCommitment.startTime}-${conflictingCommitment.endTime})`;
-      }
-      
-      if (conflictCheck.conflictType === 'strict') {
-        setConflictError(
-          `Time conflict with "${conflictingCommitment.title}" ${conflictDescription}. Please adjust your schedule.`
-        );
-        return;
-      } else if (conflictCheck.conflictType === 'override') {
-        // For override conflicts, show a different message
-        if (!formData.recurring) {
-          setConflictError(
-            `This one-time commitment will override the recurring commitment "${conflictingCommitment.title}" on the selected dates.`
-          );
-          // Don't return - allow the override to proceed
+
+    if (commitmentType === 'smart') {
+      // Handle smart commitment submission
+      const smartCommitmentData = {
+        title: formData.title,
+        type: 'smart' as const,
+        category: formData.category,
+        location: formData.location,
+        description: formData.description,
+        totalHoursPerWeek: smartFormData.totalHoursPerWeek,
+        preferredDays: smartFormData.preferredDays,
+        preferredTimeRanges: smartFormData.preferredTimeRanges,
+        sessionDurationRange: smartFormData.sessionDurationRange,
+        allowTimeShifting: smartFormData.allowTimeShifting,
+        priorityLevel: smartFormData.priorityLevel,
+        suggestedSessions: suggestedSessions,
+        isConfirmed: true,
+        dateRange: formData.dateRange.startDate && formData.dateRange.endDate ? formData.dateRange : undefined,
+        countsTowardDailyHours: formData.countsTowardDailyHours
+      };
+
+      onAddSmartCommitment(smartCommitmentData);
+    } else {
+      // Handle fixed commitment submission (existing logic)
+      const conflictCheck = checkCommitmentConflicts(formData, existingCommitments.filter(c => c.type !== 'smart') as FixedCommitment[]);
+
+      if (conflictCheck.hasConflict) {
+        const conflictingCommitment = conflictCheck.conflictingCommitment!;
+        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        let conflictDescription = '';
+
+        if (conflictingCommitment.recurring) {
+          const conflictingDays = conflictingCommitment.daysOfWeek.map(day => dayNames[day]).join(', ');
+          conflictDescription = `(${conflictingDays}, ${conflictingCommitment.startTime}-${conflictingCommitment.endTime})`;
         } else {
-          const conflictingDates = conflictCheck.conflictingDates?.map(date => new Date(date).toLocaleDateString()).join(', ') || '';
+          const conflictingDates = conflictingCommitment.specificDates?.map(date => new Date(date).toLocaleDateString()).join(', ') || '';
+          conflictDescription = `(${conflictingDates}, ${conflictingCommitment.startTime}-${conflictingCommitment.endTime})`;
+        }
+
+        if (conflictCheck.conflictType === 'strict') {
           setConflictError(
-            `This recurring commitment conflicts with one-time commitments on: ${conflictingDates}. These dates will be excluded from the recurring schedule.`
+            `Time conflict with "${conflictingCommitment.title}" ${conflictDescription}. Please adjust your schedule.`
           );
-          // Don't return - allow the override to proceed
+          return;
+        } else if (conflictCheck.conflictType === 'override') {
+          if (!formData.recurring) {
+            setConflictError(
+              `This one-time commitment will override the recurring commitment "${conflictingCommitment.title}" on the selected dates.`
+            );
+          } else {
+            const conflictingDates = conflictCheck.conflictingDates?.map(date => new Date(date).toLocaleDateString()).join(', ') || '';
+            setConflictError(
+              `This recurring commitment conflicts with one-time commitments on: ${conflictingDates}. These dates will be excluded from the recurring schedule.`
+            );
+          }
         }
       }
+
+      const commitmentData = {
+        ...formData,
+        type: 'fixed' as const,
+        startTime: formData.isAllDay ? undefined : formData.startTime,
+        endTime: formData.isAllDay ? undefined : formData.endTime,
+        dateRange: (formData.recurring && formData.dateRange.startDate && formData.dateRange.endDate)
+          ? formData.dateRange
+          : undefined
+      };
+
+      onAddCommitment(commitmentData);
     }
 
-    // Clear any previous conflict errors
-    setConflictError(null);
-    
-    // Prepare commitment data
-    const commitmentData = {
-      ...formData,
-      // Only include startTime and endTime if not an all-day event
-      startTime: formData.isAllDay ? undefined : formData.startTime,
-      endTime: formData.isAllDay ? undefined : formData.endTime,
-      // Only include dateRange if it has valid values
-      dateRange: (formData.recurring && formData.dateRange.startDate && formData.dateRange.endDate) 
-        ? formData.dateRange 
-        : undefined
-    };
-    
-    onAddCommitment(commitmentData);
+    // Reset form
     setFormData({
       title: '',
       startTime: '',
@@ -174,6 +216,16 @@ const FixedCommitmentInput: React.FC<FixedCommitmentInputProps> = ({
         endDate: ''
       }
     });
+    setSmartFormData({
+      totalHoursPerWeek: 3,
+      preferredDays: [],
+      preferredTimeRanges: [{ start: '14:00', end: '18:00' }],
+      sessionDurationRange: { min: 60, max: 120 },
+      allowTimeShifting: true,
+      priorityLevel: 'medium'
+    });
+    setSuggestedSessions([]);
+    setShowPreview(false);
     setIsOpen(false);
   };
 
