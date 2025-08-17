@@ -18,6 +18,7 @@ const DragAndDropCalendar = withDragAndDrop(Calendar);
 interface CalendarViewProps {
   studyPlans: StudyPlan[];
   fixedCommitments: FixedCommitment[];
+  smartCommitments?: SmartCommitment[];
   tasks: Task[];
   settings?: UserSettings;
   onSelectTask?: (task: Task, session?: { allocatedHours: number; planDate?: string; sessionNumber?: number }) => void;
